@@ -61,25 +61,16 @@ vector<int> calc_pisano_cycle(int n){
     cycle[0] = 0;
     cycle[1] = 1;
     int zeros = 0;
-//    For small 0, 1, cycle is also small and period easy to find
-//    if (n == 0) {
-//        return n;
-//    } else if (n == 1) {
-//        return n;
-//    }
-    
     //stop when found 4 zeros
     //what about n and 0s?
     // n * n
     for (int i = 2 ; zeros <= 4 && i <= n * 7; i++) {
         std::cout << "\nstart i: "<< i << "\n";
-//        std::cout << "b cycle[i-2]: "<< cycle[i-2] << "\n";
-//        std::cout << "b cycle[i-1]: "<< cycle[i-1] << "\n";
         cycle[i] = cycle[i-1] + cycle[i-2];
-//        std::cout << "\ni: "<< i <<" before mod: " << cycle[i] << "\n";
+
         if (cycle[i] >= n) {
             cycle[i] = cycle[i] % n;
-//            std::cout << "after mod: " << cycle[i] << "\n";
+
         }
         if (cycle[i] == 0) {
             zeros++;
