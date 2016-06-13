@@ -55,36 +55,42 @@ int calc_fib_fast_noVector(int n) {
     return value;
 }
 
-vector<int> calc_pisano_cycle(int n){
-    vector<int> cycle(n*7);
-
-    cycle[0] = 0;
-    cycle[1] = 1;
-    int zeros = 0;
-    //stop when found 4 zeros
-    //what about n and 0s?
-    // n * n
-    for (int i = 2 ; zeros <= 4 && i <= n * 7; i++) {
-        std::cout << "\nstart i: "<< i << "\n";
-        cycle[i] = cycle[i-1] + cycle[i-2];
-
-        if (cycle[i] >= n) {
-            cycle[i] = cycle[i] % n;
-
-        }
-        if (cycle[i] == 0) {
-            zeros++;
-            std::cout << "zeros: " <<zeros << "\n";
-        }
-        std::cout << "\ncycle: ";
-        for(int i = 0; i < cycle.size(); i++ ){
-            std::cout << cycle[i] << " ";
-        }
-    }
-    
+void print_vector(vector<int> cycle){
+    std::cout << "\n";
+    std::cout << "\ncycle: ";
     for(int i = 0; i < cycle.size(); i++ ){
         std::cout << cycle[i] << " ";
     }
+    std::cout << "\n";
+}
+
+
+vector<int> calc_pisano_cycle(int n){
+    //change to dynamic size
+    vector<int> cycle;
+    vector<int> index_of_zeros;
+    
+    cycle.push_back(0);
+    cycle.push_back(1);
+    int zeros = 0;
+    // stop when found 4 zeros
+    // what about n and 0s?
+    // n * n
+    for (int i = 2 ; zeros <= 4; i++) {
+        //      std::cout << "\nstart i: "<< i << "\n";
+        cycle.push_back(cycle[i-1] + cycle[i-2]);
+        if (cycle[i] >= n) {
+            cycle[i] = cycle[i] % n;
+        }
+        if (cycle[i] == 0) {
+            zeros++;
+            //      std::cout << "zeros: " <<zeros << "\n";
+            index_of_zeros.push_back(i);
+        }
+        //      is_(cycle, zeros, index_of_zeros);
+    }
+    print_vector(cycle);
+    print_vector(index_of_zeros);
     return cycle;
 }
 
