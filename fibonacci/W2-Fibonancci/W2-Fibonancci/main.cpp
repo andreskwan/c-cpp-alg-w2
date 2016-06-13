@@ -6,8 +6,9 @@
 //  Copyright © 2016 kwan.coursera.altgoritms. All rights reserved.
 //
 
-#include <iostream>
-#include <vector>
+#include <iostream>     // std::cout
+#include <algorithm>    // std::search
+#include <vector>       // std::vector
 
 using std::vector;
 using std::cin;
@@ -55,15 +56,32 @@ int calc_fib_fast_noVector(int n) {
     return value;
 }
 
-void print_vector(vector<int> cycle){
+void print_vector(vector<int> cycle, std::string message){
     std::cout << "\n";
-    std::cout << "\ncycle: ";
+    std::cout << message << ": ";
     for(int i = 0; i < cycle.size(); i++ ){
         std::cout << cycle[i] << " ";
     }
     std::cout << "\n";
 }
 
+int pisano_period(vector<int> cycle, vector<int> index_of_zeros) {
+    int first_fibo[] = {0,1,1};
+//    print_vector(cycle, "Cycle");
+//    print_vector(index_of_zeros, "index_of_zeros");
+    for (int i = 0 ; i < index_of_zeros.size() - 1 ; i++) {
+        //crete subvector
+        vector<int> sub(&cycle[index_of_zeros[i]],&cycle[index_of_zeros[i+1]]);
+//        print_vector(sub, "sub");
+        vector<int>::iterator it;
+        it = std::search(sub.begin(), sub.end(), first_fibo, first_fibo+3);
+        if (it!=sub.end()){
+//            std::cout << "needle1 found at position " << (it-sub.begin()) << '\n';
+            return index_of_zeros[i];
+        }
+    }
+    return 0;
+}
 
 vector<int> calc_pisano_cycle(int n){
     //change to dynamic size
@@ -84,28 +102,29 @@ vector<int> calc_pisano_cycle(int n){
         }
         if (cycle[i] == 0) {
             zeros++;
-            //      std::cout << "zeros: " <<zeros << "\n";
+            // std::cout << "zeros: " <<zeros << "\n";
+            // count which zero has been validated
+            // avoid to repeat
+            
             index_of_zeros.push_back(i);
         }
-        //      is_(cycle, zeros, index_of_zeros);
+        
+        //if z>=2 validate //and coun
+        //could be done in a reactive way, when zero set
+        
     }
-    print_vector(cycle);
-    print_vector(index_of_zeros);
+//    print_vector(cycle, "pisano cycle: ");
+//    print_vector(index_of_zeros, "pisano index_of_zeros: ");
+    std::cout << "pisano period: " << pisano_period(cycle, index_of_zeros) << "\n";
     return cycle;
 }
 
-int pisano_period(int n) {
-    vector<int> pisano_cycle = calc_pisano_cycle(n);
-    return 0;
-}
-
-
-int calc_mod_fib(int n, int m){
-    int period = pisano_period(m);
-    int remain = n % period;
-    int fibo_of_remain = calc_fib_fast_noVector(remain);
-    return fibo_of_remain % m;
-}
+//int calc_mod_fib(int n, int m){
+//    int period = pisano_period(m);
+//    int remain = n % period;
+//    int fibo_of_remain = calc_fib_fast_noVector(remain);
+//    return fibo_of_remain % m;
+//}
 
 
 int main() {
@@ -116,6 +135,10 @@ int main() {
 //    std::cout << calc_fib_fast(n) << '\n';
 //    uncomment
 //    std::cout << calc_fib_fast_noVector(n) << '\n';
+    if (n == 1) {
+        std::cout << "pisano period: 1";
+        return 1;
+    }
     calc_pisano_cycle(n);
     return 0;
 }
