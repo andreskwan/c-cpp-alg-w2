@@ -6,15 +6,21 @@
 //  Copyright © 2016 kwan.coursera.altgoritms. All rights reserved.
 //
 
-#include <iostream>     // std::cout
-#include <algorithm>    // std::search
-#include <vector>       // std::vector
-#include <map>       // std::vector
+#include <iostream>     // cout
+#include <algorithm>    // search
+#include <vector>       // vector
+#include <map>          // vector
 
 using std::vector;
 using std::cin;
 using std::cout;
+using std::string;
+using std::map;
+using std::pair;
 
+typedef long long longInt;
+typedef unsigned long long unsigLongInt;
+typedef __uint128_t extraLongInt;
 
 int calc_fib(int n) {
     if (n <= 1)
@@ -30,19 +36,19 @@ int calc_fib_fast(int n) {
     
 //    fibo_array.insert(0, 0);
 //    fibo_array.insert(1, 1);
-//        std::cout << "index: " << 0 << " value: " << fibo_array[0] << "\n";
-//        std::cout << "index: " << 1 << " value: " << fibo_array[1] << "\n";
+//        cout << "index: " << 0 << " value: " << fibo_array[0] << "\n";
+//        cout << "index: " << 1 << " value: " << fibo_array[1] << "\n";
     for (int i = 2; i <= n; i++) {
         fibo_array[i] = fibo_array[i-1] + fibo_array[i-2];
-//        std::cout << "index: " << i << " value: " << fibo_array[i] << "\n";
+//        cout << "index: " << i << " value: " << fibo_array[i] << "\n";
     }
     return fibo_array[n];
 }
 
-__uint128_t calc_fib_fast_noVector(long long n) {
-    __uint128_t oneStepBefore = 1;
-    __uint128_t twoStespBefore = 0;
-    __uint128_t value = 0;
+extraLongInt calc_fib_fast_noVector(long long n) {
+    extraLongInt oneStepBefore = 1;
+    extraLongInt twoStespBefore = 0;
+    extraLongInt value = 0;
     if (n == 0) {
         return n;
     } else if (n == 1) {
@@ -57,16 +63,16 @@ __uint128_t calc_fib_fast_noVector(long long n) {
     return value;
 }
 
-void print_vector(vector<int> cycle, std::string message){
-    std::cout << "\n";
-    std::cout << message << ": ";
+void print_vector(vector<int> cycle, string message){
+    cout << "\n";
+    cout << message << ": ";
     for(int i = 0; i < cycle.size(); i++ ){
-        std::cout << cycle[i] << " ";
+        cout << cycle[i] << " ";
     }
-    std::cout << "\n";
+    cout << "\n";
 }
 
-int pisano_period(std::map<std::string, vector<int>> myMap) {
+int pisano_period(map<string, vector<int>> myMap) {
     int first_fibo[] = {0,1,1};
     vector<int> cycle = myMap["cycle"];
     vector<int> index_of_zeros = myMap["index_of_zeros"];
@@ -77,7 +83,7 @@ int pisano_period(std::map<std::string, vector<int>> myMap) {
         vector<int> sub(&cycle[index_of_zeros[i]],&cycle[index_of_zeros[i+1]]);
 //        print_vector(sub, "sub");
         vector<int>::iterator it;
-        it = std::search(sub.begin(), sub.end(), first_fibo, first_fibo+3);
+        it = search(sub.begin(), sub.end(), first_fibo, first_fibo+3);
         if (it!=sub.end()){
             return index_of_zeros[i];
         }
@@ -91,7 +97,7 @@ int pisano_period(std::map<std::string, vector<int>> myMap) {
  *
  */
 //vector<int> calc_pisano_cycle(int n){
-std::map<std::string, vector<int>> calc_pisano_cycle(unsigned long long n){
+map<string, vector<int>> calc_pisano_cycle(unsigLongInt n){
     vector<int> cycle;
     vector<int> index_of_zeros;
     
@@ -99,14 +105,14 @@ std::map<std::string, vector<int>> calc_pisano_cycle(unsigned long long n){
     cycle.push_back(1);
     int zeros = 0;
     for (int i = 2 ; zeros <= 4; i++) {
-        //      std::cout << "\nstart i: "<< i << "\n";
+        //      cout << "\nstart i: "<< i << "\n";
         cycle.push_back(cycle[i-1] + cycle[i-2]);
         if (cycle[i] >= n) {
             cycle[i] = cycle[i] % n;
         }
         if (cycle[i] == 0) {
             zeros++;
-            // std::cout << "zeros: " <<zeros << "\n";
+            // cout << "zeros: " <<zeros << "\n";
             // count which zero has been validated
             // avoid to repeat
             index_of_zeros.push_back(i);
@@ -114,49 +120,49 @@ std::map<std::string, vector<int>> calc_pisano_cycle(unsigned long long n){
     }
 //    print_vector(cycle, "pisano cycle: ");
 //    print_vector(index_of_zeros, "pisano index_of_zeros: ");
-//    std::cout << "pisano period: " << pisano_period(cycle, index_of_zeros) << "\n";
-    std::map<std::string, vector<int>> myMap;
-    myMap.insert(std::pair<std::string, vector<int>> {"cycle", cycle});
-    myMap.insert(std::pair<std::string, vector<int>> {"index_of_zeros", index_of_zeros});
+//    cout << "pisano period: " << pisano_period(cycle, index_of_zeros) << "\n";
+    map<string, vector<int>> myMap;
+    myMap.insert(pair<string, vector<int>> {"cycle", cycle});
+    myMap.insert(pair<string, vector<int>> {"index_of_zeros", index_of_zeros});
     return myMap;
 }
 
-unsigned long long calc_mod_fib(unsigned long long n, unsigned long long m){
-    std::map<std::string, vector<int>> mapOfarrays = calc_pisano_cycle(m);
-    unsigned long long period = pisano_period(mapOfarrays);
-    std::cout << "pisano period: " << period << "\n";
-    unsigned long long remain = n % period;
-    std::cout << "remain: " << remain << "\n";
-    __uint128_t fibo_of_remain = calc_fib_fast_noVector(remain);
-//    std::cout << "fibo_of_remain: " << fibo_of_remain << "\n";
-    unsigned long long module = fibo_of_remain % m;
-    std::cout << "module: " << module << "\n";
+unsigLongInt calc_mod_fib(unsigLongInt n, unsigLongInt m){
+    map<string, vector<int>> mapOfarrays = calc_pisano_cycle(m);
+    unsigLongInt period = pisano_period(mapOfarrays);
+//    cout << "pisano period: " << period << "\n";
+    unsigLongInt remain = n % period;
+//    cout << "remain: " << remain << "\n";
+    extraLongInt fibo_of_remain = calc_fib_fast_noVector(remain);
+//    cout << "fibo_of_remain: " << fibo_of_remain << "\n";
+    unsigLongInt module = fibo_of_remain % m;
+//    cout << "module: " << module << "\n";
     return module;
 }
 
 
 int main() {
-    unsigned long long n = 0;
-    unsigned long long m = 0;
-    
-    std::cin >> n >> m;
-//    std::cout << "Fast: " << calc_fib_fast(n) << '\n';
-//    std::cout << "Slow: " << calc_fib(n) << '\n';
-//    std::cout << calc_fib_fast(n) << '\n';
+    unsigLongInt n = 0;
+//    unsigLongInt m = 1;
+//    cin >> n >> m;
+    cin >> n;
+//    cout << "Fast: " << calc_fib_fast(n) << '\n';
+//    cout << "Slow: " << calc_fib(n) << '\n';
+//    cout << calc_fib_fast(n) << '\n';
 //    uncomment
-//    std::cout << calc_fib_fast_noVector(n) << '\n';
-    if (m == 1) {
-//        std::cout << "pisano period: 1";
-        std::cout << 1;
-        return 0;
-    }
+//    cout << calc_fib_fast_noVector(n) << '\n';
+//    if (m <= 1) {
+////        cout << "pisano period: 1";
+//        cout << 1;
+//        return 0;
+//    }
     
 //    calc_pisano_cycle(n);
 //    for (int i = 1; i < 20 ; i++) {
-//        unsigned long long ene = i + n;
-//        std::cout << "n: " << ene << " ";
-//        std::cout << "mod  "<< m << " = " << calc_mod_fib(ene, m)  <<  "\n";
+//        unsigLongInt ene = i + n;
+//        cout << "n: " << ene << " ";
+//        cout << "mod  "<< m << " = " << calc_mod_fib(ene, m)  <<  "\n";
 //    }
-    std::cout << calc_mod_fib(n, m);
+    cout << calc_mod_fib(n, 10);
     return 0;
 }
