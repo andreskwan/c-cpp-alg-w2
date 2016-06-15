@@ -122,17 +122,15 @@ std::map<std::string, vector<int>> calc_pisano_cycle(unsigned long long n){
 }
 
 unsigned long long calc_mod_fib(unsigned long long n, unsigned long long m){
-//    354224848179261915075 - true
-//    3736710778780434371   - wrong 
     std::map<std::string, vector<int>> mapOfarrays = calc_pisano_cycle(m);
     unsigned long long period = pisano_period(mapOfarrays);
-//    std::cout << "pisano period: " << period << "\n";
+    std::cout << "pisano period: " << period << "\n";
     unsigned long long remain = n % period;
-//    std::cout << "remain: " << remain << "\n";
+    std::cout << "remain: " << remain << "\n";
     __uint128_t fibo_of_remain = calc_fib_fast_noVector(remain);
 //    std::cout << "fibo_of_remain: " << fibo_of_remain << "\n";
     unsigned long long module = fibo_of_remain % m;
-//    std::cout << "module: " << module << "\n";
+    std::cout << "module: " << module << "\n";
     return module;
 }
 
@@ -140,6 +138,7 @@ unsigned long long calc_mod_fib(unsigned long long n, unsigned long long m){
 int main() {
     unsigned long long n = 0;
     unsigned long long m = 0;
+    
     std::cin >> n >> m;
 //    std::cout << "Fast: " << calc_fib_fast(n) << '\n';
 //    std::cout << "Slow: " << calc_fib(n) << '\n';
@@ -153,6 +152,11 @@ int main() {
     }
     
 //    calc_pisano_cycle(n);
+//    for (int i = 1; i < 20 ; i++) {
+//        unsigned long long ene = i + n;
+//        std::cout << "n: " << ene << " ";
+//        std::cout << "mod  "<< m << " = " << calc_mod_fib(ene, m)  <<  "\n";
+//    }
     std::cout << calc_mod_fib(n, m);
     return 0;
 }
