@@ -9,6 +9,7 @@
 #include <iostream>     // std::cout
 #include <algorithm>    // std::search
 #include <vector>       // std::vector
+#include <map>       // std::vector
 
 using std::vector;
 using std::cin;
@@ -38,10 +39,10 @@ int calc_fib_fast(int n) {
     return fibo_array[n];
 }
 
-int calc_fib_fast_noVector(int n) {
-    int oneStepBefore = 1;
-    int twoStespBefore = 0;
-    int value = 0;
+__uint128_t calc_fib_fast_noVector(long long n) {
+    __uint128_t oneStepBefore = 1;
+    __uint128_t twoStespBefore = 0;
+    __uint128_t value = 0;
     if (n == 0) {
         return n;
     } else if (n == 1) {
@@ -51,7 +52,7 @@ int calc_fib_fast_noVector(int n) {
     for (int i = 2 ; i <= n ; i++) {
         value = oneStepBefore + twoStespBefore;
         twoStespBefore = oneStepBefore;
-        oneStepBefore = value;
+        oneStepBefore =     value;
     }
     return value;
 }
@@ -65,8 +66,10 @@ void print_vector(vector<int> cycle, std::string message){
     std::cout << "\n";
 }
 
-int pisano_period(vector<int> cycle, vector<int> index_of_zeros) {
+int pisano_period(std::map<std::string, vector<int>> myMap) {
     int first_fibo[] = {0,1,1};
+    vector<int> cycle = myMap["cycle"];
+    vector<int> index_of_zeros = myMap["index_of_zeros"];
 //    print_vector(cycle, "Cycle");
 //    print_vector(index_of_zeros, "index_of_zeros");
     for (int i = 0 ; i < index_of_zeros.size() - 1 ; i++) {
@@ -76,24 +79,25 @@ int pisano_period(vector<int> cycle, vector<int> index_of_zeros) {
         vector<int>::iterator it;
         it = std::search(sub.begin(), sub.end(), first_fibo, first_fibo+3);
         if (it!=sub.end()){
-//            std::cout << "needle1 found at position " << (it-sub.begin()) << '\n';
             return index_of_zeros[i];
         }
     }
     return 0;
 }
 
-vector<int> calc_pisano_cycle(int n){
-    //change to dynamic size
+
+/* this return value is not being used
+ * I need to return a map that holds two vectors cycle and index_of_zeros
+ *
+ */
+//vector<int> calc_pisano_cycle(int n){
+std::map<std::string, vector<int>> calc_pisano_cycle(unsigned long long n){
     vector<int> cycle;
     vector<int> index_of_zeros;
     
     cycle.push_back(0);
     cycle.push_back(1);
     int zeros = 0;
-    // stop when found 4 zeros
-    // what about n and 0s?
-    // n * n
     for (int i = 2 ; zeros <= 4; i++) {
         //      std::cout << "\nstart i: "<< i << "\n";
         cycle.push_back(cycle[i-1] + cycle[i-2]);
@@ -105,40 +109,50 @@ vector<int> calc_pisano_cycle(int n){
             // std::cout << "zeros: " <<zeros << "\n";
             // count which zero has been validated
             // avoid to repeat
-            
             index_of_zeros.push_back(i);
         }
-        
-        //if z>=2 validate //and coun
-        //could be done in a reactive way, when zero set
-        
     }
 //    print_vector(cycle, "pisano cycle: ");
 //    print_vector(index_of_zeros, "pisano index_of_zeros: ");
-    std::cout << "pisano period: " << pisano_period(cycle, index_of_zeros) << "\n";
-    return cycle;
+//    std::cout << "pisano period: " << pisano_period(cycle, index_of_zeros) << "\n";
+    std::map<std::string, vector<int>> myMap;
+    myMap.insert(std::pair<std::string, vector<int>> {"cycle", cycle});
+    myMap.insert(std::pair<std::string, vector<int>> {"index_of_zeros", index_of_zeros});
+    return myMap;
 }
 
-//int calc_mod_fib(int n, int m){
-//    int period = pisano_period(m);
-//    int remain = n % period;
-//    int fibo_of_remain = calc_fib_fast_noVector(remain);
-//    return fibo_of_remain % m;
-//}
+unsigned long long calc_mod_fib(unsigned long long n, unsigned long long m){
+//    354224848179261915075 - true
+//    3736710778780434371   - wrong 
+    std::map<std::string, vector<int>> mapOfarrays = calc_pisano_cycle(m);
+    unsigned long long period = pisano_period(mapOfarrays);
+//    std::cout << "pisano period: " << period << "\n";
+    unsigned long long remain = n % period;
+//    std::cout << "remain: " << remain << "\n";
+    __uint128_t fibo_of_remain = calc_fib_fast_noVector(remain);
+//    std::cout << "fibo_of_remain: " << fibo_of_remain << "\n";
+    unsigned long long module = fibo_of_remain % m;
+//    std::cout << "module: " << module << "\n";
+    return module;
+}
 
 
 int main() {
-    int n = 0;
-    std::cin >> n;
+    unsigned long long n = 0;
+    unsigned long long m = 0;
+    std::cin >> n >> m;
 //    std::cout << "Fast: " << calc_fib_fast(n) << '\n';
 //    std::cout << "Slow: " << calc_fib(n) << '\n';
 //    std::cout << calc_fib_fast(n) << '\n';
 //    uncomment
 //    std::cout << calc_fib_fast_noVector(n) << '\n';
-    if (n == 1) {
-        std::cout << "pisano period: 1";
-        return 1;
+    if (m == 1) {
+//        std::cout << "pisano period: 1";
+        std::cout << 1;
+        return 0;
     }
-    calc_pisano_cycle(n);
+    
+//    calc_pisano_cycle(n);
+    std::cout << calc_mod_fib(n, m);
     return 0;
 }
