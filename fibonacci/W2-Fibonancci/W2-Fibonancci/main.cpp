@@ -127,15 +127,22 @@ map<string, vector<int>> calc_pisano_cycle(unsigLongInt n){
     return myMap;
 }
 
-unsigLongInt calc_mod_fib(unsigLongInt n, unsigLongInt m){
+extraLongInt calc_mod_fib(unsigLongInt n, unsigLongInt m){
+    
     map<string, vector<int>> mapOfarrays = calc_pisano_cycle(m);
     unsigLongInt period = pisano_period(mapOfarrays);
-//    cout << "pisano period: " << period << "\n";
+    
+    cout << "pisano period: " << period << "\n";
     unsigLongInt remain = n % period;
-//    cout << "remain: " << remain << "\n";
+    cout << "remain: " << remain << "\n";
+    
     extraLongInt fibo_of_remain = calc_fib_fast_noVector(remain);
+//    string s = std::to_string(fibo_of_remain);
+    
+//    cout <<"fibo_of_remain " <<  << "\n ";
 //    cout << "fibo_of_remain: " << fibo_of_remain << "\n";
-    unsigLongInt module = fibo_of_remain % m;
+    
+    extraLongInt module = fibo_of_remain % m;
 //    cout << "module: " << module << "\n";
     return module;
 }
@@ -143,26 +150,30 @@ unsigLongInt calc_mod_fib(unsigLongInt n, unsigLongInt m){
 
 int main() {
     unsigLongInt n = 0;
-//    unsigLongInt m = 1;
-//    cin >> n >> m;
-    cin >> n;
+    unsigLongInt m = 1;
+    cin >> n >> m;
+//    cin >> n;
 //    cout << "Fast: " << calc_fib_fast(n) << '\n';
 //    cout << "Slow: " << calc_fib(n) << '\n';
 //    cout << calc_fib_fast(n) << '\n';
 //    uncomment
-//    cout << calc_fib_fast_noVector(n) << '\n';
-//    if (m <= 1) {
-////        cout << "pisano period: 1";
-//        cout << 1;
-//        return 0;
-//    }
-    
-//    calc_pisano_cycle(n);
-//    for (int i = 1; i < 20 ; i++) {
-//        unsigLongInt ene = i + n;
-//        cout << "n: " << ene << " ";
-//        cout << "mod  "<< m << " = " << calc_mod_fib(ene, m)  <<  "\n";
-//    }
-    cout << calc_mod_fib(n, 10);
+//    extraLongInt ivan =  calc_fib_fast_noVector(n);
+
+//    cout <<  << '\n';
+    if (m <= 1) {
+//        cout << "pisano period: 1";
+        cout << 1;
+        return 0;
+    }
+
+////    calc_pisano_cycle(n);
+////    for (int i = 1; i < 20 ; i++) {
+////        unsigLongInt ene = i + n;
+////        cout << "n: " << ene << " ";
+////        cout << "mod  "<< m << " = " << calc_mod_fib(ene, m)  <<  "\n";
+////    }
+    extraLongInt result = calc_mod_fib(n, 100000);
+    extraLongInt result2 = calc_mod_fib(result, m);
+//    cout << calc_mod_fib(n, m);
     return 0;
 }
