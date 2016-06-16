@@ -1,3 +1,4 @@
+
 //
 //  main.cpp
 //  W2-Fibonancci
@@ -21,6 +22,10 @@ using std::pair;
 typedef long long longInt;
 typedef unsigned long long unsigLongInt;
 typedef __uint128_t extraLongInt;
+
+//typedef int longInt;
+//typedef int unsigLongInt;
+//typedef int extraLongInt;
 
 int calc_fib(int n) {
     if (n <= 1)
@@ -57,7 +62,26 @@ extraLongInt calc_fib_fast_noVector(long long n) {
         
     for (int i = 2 ; i <= n ; i++) {
         value = oneStepBefore + twoStespBefore;
+        if (value % 100 == 13) {
+            
+        }
         twoStespBefore = oneStepBefore;
+        oneStepBefore =     value;
+    }
+    return value;
+}
+
+int hipotesis(void) {
+    int oneStepBefore = 1;
+    int twoStespBefore = 0;
+    int value = 0;
+    
+    for (int i = 2 ; i <= 2016 ; i++) {
+        value = (oneStepBefore + twoStespBefore) % 100;
+        if (value % 100 == 13) {
+            cout << "i: " << i << " value: " << value << "\n";
+        }
+        twoStespBefore = (oneStepBefore) % 100;
         oneStepBefore =     value;
     }
     return value;
@@ -123,28 +147,18 @@ map<string, vector<int>> calc_pisano_cycle(unsigLongInt n){
 //    cout << "pisano period: " << pisano_period(cycle, index_of_zeros) << "\n";
     map<string, vector<int>> myMap;
     myMap.insert(pair<string, vector<int>> {"cycle", cycle});
+//    cout << "cycle.size()" << cycle.size();
     myMap.insert(pair<string, vector<int>> {"index_of_zeros", index_of_zeros});
+//    print_vector(index_of_zeros, "index_of_zeros");
     return myMap;
 }
 
-extraLongInt calc_mod_fib(unsigLongInt n, unsigLongInt m){
-    
+int calc_mod_fib(unsigLongInt n, unsigLongInt m){
     map<string, vector<int>> mapOfarrays = calc_pisano_cycle(m);
+    vector<int> cycle = mapOfarrays["cycle"];
     unsigLongInt period = pisano_period(mapOfarrays);
-    
-    cout << "pisano period: " << period << "\n";
     unsigLongInt remain = n % period;
-    cout << "remain: " << remain << "\n";
-    
-    extraLongInt fibo_of_remain = calc_fib_fast_noVector(remain);
-//    string s = std::to_string(fibo_of_remain);
-    
-//    cout <<"fibo_of_remain " <<  << "\n ";
-//    cout << "fibo_of_remain: " << fibo_of_remain << "\n";
-    
-    extraLongInt module = fibo_of_remain % m;
-//    cout << "module: " << module << "\n";
-    return module;
+    return cycle[remain];
 }
 
 
@@ -152,28 +166,15 @@ int main() {
     unsigLongInt n = 0;
     unsigLongInt m = 1;
     cin >> n >> m;
-//    cin >> n;
+
 //    cout << "Fast: " << calc_fib_fast(n) << '\n';
 //    cout << "Slow: " << calc_fib(n) << '\n';
 //    cout << calc_fib_fast(n) << '\n';
-//    uncomment
-//    extraLongInt ivan =  calc_fib_fast_noVector(n);
 
-//    cout <<  << '\n';
     if (m <= 1) {
-//        cout << "pisano period: 1";
         cout << 1;
         return 0;
     }
-
-////    calc_pisano_cycle(n);
-////    for (int i = 1; i < 20 ; i++) {
-////        unsigLongInt ene = i + n;
-////        cout << "n: " << ene << " ";
-////        cout << "mod  "<< m << " = " << calc_mod_fib(ene, m)  <<  "\n";
-////    }
-    extraLongInt result = calc_mod_fib(n, 100000);
-    extraLongInt result2 = calc_mod_fib(result, m);
-//    cout << calc_mod_fib(n, m);
+    cout << calc_mod_fib(n, m);
     return 0;
 }
